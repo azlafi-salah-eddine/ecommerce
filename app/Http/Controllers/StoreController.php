@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\CartItem;
 use Illuminate\Http\Request;
-use function PHPUnit\Framework\fileExists;
+use Illuminate\Support\Facades\Auth;
 
 class StoreController extends Controller
 {
@@ -15,14 +16,13 @@ class StoreController extends Controller
      */
     public function index(Request $request)
     {
-
         $Queryproducts = Product::query();
         $Categories = Category::with('products')->has('products')->get();
 
         // by name and description
         $name = $request->input('name');
         if(!empty($name)){
-            $Queryproducts->where('name', 'like', "%{$name}%",)->orWhere('description', 'like', "%{$name}%");
+            $Queryproducts->where('name', 'like', "%{$name}%")->orWhere('description', 'like', "%{$name}%");
         }
         // by category
         $categoriesids = $request->input('categories');
@@ -33,14 +33,15 @@ class StoreController extends Controller
         $max = $request->input('max');
         $min = $request->input('min','0');
         if(!empty($max)){
-            $Queryproducts->where('price', '<=',$max);
+            $Queryproducts->where('price', '<=', $max);
         }
 
         $products = $Queryproducts->get();
-        return view('store.index', compact(
-            'products',
-            'Categories'
-        ));
+
+        // Get cart items if user is authenticated
+        $cartItems = Auth::check() ? CartItem::with('product')->where('user_id', Auth::id())->get() : [];
+
+        return view('store.index', compact('products', 'Categories', 'cartItems'));
     }
 
     /**
