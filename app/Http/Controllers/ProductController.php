@@ -52,8 +52,10 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-
+        $product->load('category');
+        return view('products.show', compact('product'));
     }
+
 
     /**
      * Show the form for editing the specified resource.

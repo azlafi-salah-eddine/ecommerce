@@ -27,7 +27,12 @@
                 <tr class="hover:bg-gray-100">
                     <td class="py-2 px-4 border-b border-gray-300">{{$product->id}}</td>
                     <td class="py-2 px-4 border-b border-gray-300">{{$product->name}}</td>
-                    <td class="py-2 px-4 border-b border-gray-300">{{$product->description}}</td>
+                    @php
+                        $words = explode(' ', $product->description);
+                        $shortDescription = implode(' ', array_slice($words, 0, 3)) . '...';
+                    @endphp
+                    <td class="py-2 px-4 border-b border-gray-300">{{ $shortDescription }}</td>
+
                     <td class="py-2 px-4 border-b border-gray-300">
                         <img class="w-24" src="storage/{{$product->image}}" alt="{{$product->name}}">
                     </td>

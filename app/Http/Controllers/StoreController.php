@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductRequest;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,10 +37,8 @@ class StoreController extends Controller
 
         $products = $Queryproducts->get();
 
-        // Get cart items if user is authenticated
-        $cartItems = Auth::check() ? CartItem::with('product')->where('user_id', Auth::id())->get() : [];
 
-        return view('store.index', compact('products', 'Categories', 'cartItems'));
+        return view('store.index', compact('products', 'Categories'));
     }
 
     /**
@@ -74,7 +71,7 @@ class StoreController extends Controller
      */
     public function show(Product $product)
     {
-        //
+
     }
 
     /**
